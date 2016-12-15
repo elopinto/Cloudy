@@ -17,7 +17,7 @@ struct Defaults {
 
 struct API {
 
-    static let APIKey = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+    static let APIKey = "ffa485e956d1555137952bbf8621b43b"
     static let BaseURL = URL(string: "https://api.darksky.net/forecast/")!
 
     static var AuthenticatedBaseURL: URL {
