@@ -64,4 +64,8 @@ extension UserDefaults {
         UserDefaults.standard.set(temperatureNotation.rawValue, forKey: UserDefaultsKeys.temperatureNotation)
     }
 
+    static func setNotation<T: RawRepresentable>(_ notation: T, for key: String) where T.RawValue==Int {
+        UserDefaults.standard.set(notation.rawValue, forKey: key)
+    }
+
 }

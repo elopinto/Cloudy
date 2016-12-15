@@ -9,28 +9,29 @@
 import UIKit
 import CoreLocation
 
-class RootViewController: UIViewController {
+class RootViewController: UIViewController, CLLocationManagerDelegate, DayViewControllerDelegate,
+    WeekViewControllerDelegate, SettingsViewControllerDelegate {
 
     // MARK: - Constants
 
     private let segueDayView = "SegueDayView"
     private let segueWeekView = "SegueWeekView"
-    fileprivate let SegueSettingsView = "SegueSettingsView"
+    private let SegueSettingsView = "SegueSettingsView"
 
     // MARK: - Properties
 
-    @IBOutlet fileprivate var dayViewController: DayViewController!
-    @IBOutlet fileprivate var weekViewController: WeekViewController!
+    @IBOutlet private var dayViewController: DayViewController!
+    @IBOutlet private var weekViewController: WeekViewController!
 
     // MARK: -
 
-    fileprivate var currentLocation: CLLocation? {
+    private var currentLocation: CLLocation? {
         didSet {
             fetchWeatherData()
         }
     }
 
-    fileprivate lazy var dataManager = {
+    private lazy var dataManager = {
         return DataManager(baseURL: API.AuthenticatedBaseURL)
     }()
 
@@ -87,7 +88,8 @@ class RootViewController: UIViewController {
             } else {
                 fatalError("Unexpected Destination View Controller")
             }
-        default: break
+        default:
+            break
         }
     }
 
@@ -116,25 +118,20 @@ class RootViewController: UIViewController {
     // MARK: - Helper Methods
 
     private func setupNotificationHandling() {
-        let notificationCenter = NotificationCenter.default
-        notificationCenter.addObserver(self, selector: #selector(RootViewController.applicationDidBecomeActive(notification:)), name: Notification.Name.UIApplicationDidBecomeActive, object: nil)
+        NotificationCenter.default.addObserver(self,
+            selector: #selector(RootViewController.applicationDidBecomeActive(notification:)),
+            name: Notification.Name.UIApplicationDidBecomeActive,
+            object: nil)
     }
 
     private func requestLocation() {
         // Configure Location Manager
         locationManager.delegate = self
-
-        if CLLocationManager.authorizationStatus() == .authorizedWhenInUse {
-            // Request Current Location
-            locationManager.requestLocation()
-
-        } else {
-            // Request Authorization
-            locationManager.requestWhenInUseAuthorization()
-        }
+        locationManager.requestWhenInUseAuthorization()
+        locationManager.requestLocation()
     }
 
-    fileprivate func fetchWeatherData() {
+    private func fetchWeatherData() {
         guard let location = currentLocation else { return }
 
         let latitude = location.coordinate.latitude
@@ -155,35 +152,22 @@ class RootViewController: UIViewController {
         }
     }
 
-}
-
-extension RootViewController: CLLocationManagerDelegate {
-
-    // MARK: - Authorization
+    // MARK: - CLLocationManagerDelegate
 
     func locationManager(_ manager: CLLocationManager, didChangeAuthorization status: CLAuthorizationStatus) {
         if status == .authorizedWhenInUse {
             // Request Location
             manager.requestLocation()
-
         } else {
             // Fall Back to Default Location
             currentLocation = CLLocation(latitude: Defaults.Latitude, longitude: Defaults.Longitude)
         }
     }
 
-    // MARK: - Location Updates
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         if let location = locations.first {
             // Update Current Location
             currentLocation = location
-
-            // Reset Delegate
-            manager.delegate = nil
-
-            // Stop Location Manager
-            manager.stopUpdatingLocation()
-
         } else {
             // Fall Back to Default Location
             currentLocation = CLLocation(latitude: Defaults.Latitude, longitude: Defaults.Longitude)
@@ -199,25 +183,19 @@ extension RootViewController: CLLocationManagerDelegate {
         }
     }
 
-}
-
-extension RootViewController: DayViewControllerDelegate {
+    // MARK: - DayViewControllerDelegate
 
     func controllerDidTapSettingsButton(controller: DayViewController) {
         performSegue(withIdentifier: SegueSettingsView, sender: self)
     }
 
-}
-
-extension RootViewController: WeekViewControllerDelegate {
+    // MARK: - WeekViewController Delegate 
 
     func controllerDidRefresh(controller: WeekViewController) {
         fetchWeatherData()
     }
 
-}
-
-extension RootViewController: SettingsViewControllerDelegate {
+    // MARK: - SettingsViewControllerDelegate
 
     func controllerDidChangeTimeNotation(controller: SettingsViewController) {
         dayViewController.reloadData()
