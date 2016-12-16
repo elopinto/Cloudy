@@ -9,12 +9,6 @@
 import UIKit
 
 class WeatherViewController: UIViewController {
-
-    // MARK: - Properties
-
-    @IBOutlet var messageLabel: UILabel!
-    @IBOutlet var weatherDataContainer: UIView!
-    @IBOutlet var activityIndicatorView: UIActivityIndicatorView!
     
     // MARK: - View Life Cycle
 
@@ -34,14 +28,14 @@ class WeatherViewController: UIViewController {
 
     private func setupView() {
         // Configure Message Label
-        messageLabel.isHidden = true
-
-        // Configure Weather Data Container
-        weatherDataContainer.isHidden = true
-
-        // Configure Activity Indicator View
-        activityIndicatorView.startAnimating()
-        activityIndicatorView.hidesWhenStopped = true
+//        messageLabel.isHidden = true
+//
+//        // Configure Weather Data Container
+//        weatherDataContainer.isHidden = true
+//
+//        // Configure Activity Indicator View
+//        activityIndicatorView.startAnimating()
+//        activityIndicatorView.hidesWhenStopped = true
     }
 
     private func updateView() {

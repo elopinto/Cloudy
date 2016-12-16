@@ -66,16 +66,10 @@ class WeekViewController: WeatherViewController {
     }
 
     private func updateView() {
-        activityIndicatorView.stopAnimating()
         tableView.refreshControl?.endRefreshing()
 
         if let week = week {
             updateWeatherDataContainer(withWeatherData: week)
-
-        } else {
-            messageLabel.isHidden = false
-            messageLabel.text = "Cloudy was unable to fetch weather data."
-            
         }
     }
 
@@ -99,8 +93,6 @@ class WeekViewController: WeatherViewController {
     // MARK: -
 
     private func updateWeatherDataContainer(withWeatherData weatherData: [WeatherDayData]) {
-        weatherDataContainer.isHidden = false
-
         tableView.reloadData()
     }
 

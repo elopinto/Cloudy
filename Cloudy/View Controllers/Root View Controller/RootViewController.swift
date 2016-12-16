@@ -10,7 +10,7 @@ import UIKit
 import CoreLocation
 
 class RootViewController: UIViewController, CLLocationManagerDelegate, DayViewControllerDelegate,
-    WeekViewControllerDelegate, MySettingsViewControllerDelegate {
+    WeekViewControllerDelegate, SettingsViewControllerDelegate {
 
     // MARK: - Constants
 
@@ -20,8 +20,11 @@ class RootViewController: UIViewController, CLLocationManagerDelegate, DayViewCo
 
     // MARK: - Properties
 
-    @IBOutlet private var dayViewController: DayViewController!
-    @IBOutlet private var weekViewController: WeekViewController!
+    private var dayViewController: DayViewController!
+    private var weekViewController: WeekViewController!
+
+    @IBOutlet weak var dayLabel: UILabel!
+    @IBOutlet weak var weekLabel: UILabel!
 
     @IBOutlet weak var dayActivityIndicator: UIActivityIndicatorView!
     @IBOutlet weak var weekActivityIndicator: UIActivityIndicatorView!
@@ -37,9 +40,7 @@ class RootViewController: UIViewController, CLLocationManagerDelegate, DayViewCo
         }
     }
 
-    private lazy var dataManager = {
-        return DataManager(baseURL: API.AuthenticatedBaseURL)
-    }()
+    private let dataManager = DataManager(baseURL: API.AuthenticatedBaseURL)
 
     private lazy var locationManager: CLLocationManager = {
         // Initialize Location Manager
@@ -89,7 +90,7 @@ class RootViewController: UIViewController, CLLocationManagerDelegate, DayViewCo
             }
         case SegueSettingsView:
             if let navigationController = segue.destination as? UINavigationController,
-               let settingsViewController = navigationController.topViewController as? MySettingsTableViewController {
+               let settingsViewController = navigationController.topViewController as? SettingsViewController {
                 settingsViewController.delegate = self
             } else {
                 fatalError("Unexpected Destination View Controller")
@@ -102,17 +103,26 @@ class RootViewController: UIViewController, CLLocationManagerDelegate, DayViewCo
     // MARK: - View Methods
 
     private func setupView() {
-        // Configure Weather Data Container
         dayContainerView.isHidden = true
         weekContainerView.isHidden = true
 
-        // Configure Activity Indicator View
         dayActivityIndicator.startAnimating()
         weekActivityIndicator.startAnimating()
     }
 
     private func updateView() {
+        dayContainerView.isHidden = false
+        weekContainerView.isHidden = false
 
+        dayActivityIndicator.stopAnimating()
+        weekActivityIndicator.stopAnimating()
+    }
+
+    private func showErrorMessage() {
+        for label in [dayLabel, weekLabel] {
+            label?.isHidden = false
+            label?.text = "Unable to get data from Cloudy"
+        }
     }
 
     // MARK: - Actions
@@ -154,7 +164,9 @@ class RootViewController: UIViewController, CLLocationManagerDelegate, DayViewCo
         dataManager.weatherDataForLocation(latitude: latitude, longitude: longitude) { (response, error) in
             if let error = error {
                 print(error)
+                self.showErrorMessage()
             } else if let response = response {
+                self.updateView()
                 // Configure Day View Controller
                 self.dayViewController.now = response
 
@@ -209,17 +221,17 @@ class RootViewController: UIViewController, CLLocationManagerDelegate, DayViewCo
 
     // MARK: - SettingsViewControllerDelegate
 
-    func controllerDidChangeTimeNotation(controller: MySettingsTableViewController) {
+    func controllerDidChangeTimeNotation(controller: SettingsViewController) {
         dayViewController.reloadData()
         weekViewController.reloadData()
     }
 
-    func controllerDidChangeUnitsNotation(controller: MySettingsTableViewController) {
+    func controllerDidChangeUnitsNotation(controller: SettingsViewController) {
         dayViewController.reloadData()
         weekViewController.reloadData()
     }
 
-    func controllerDidChangeTemperatureNotation(controller: MySettingsTableViewController) {
+    func controllerDidChangeTemperatureNotation(controller: SettingsViewController) {
         dayViewController.reloadData()
         weekViewController.reloadData()
     }

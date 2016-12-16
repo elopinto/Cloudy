@@ -56,23 +56,14 @@ class DayViewController: WeatherViewController {
     }
 
     private func updateView() {
-        activityIndicatorView.stopAnimating()
-
         if let now = now {
             updateWeatherDataContainer(withWeatherData: now)
-
-        } else {
-            messageLabel.isHidden = false
-            messageLabel.text = "Cloudy was unable to fetch weather data."
-
         }
     }
 
     // MARK: -
 
     private func updateWeatherDataContainer(withWeatherData weatherData: WeatherData) {
-        weatherDataContainer.isHidden = false
-
         var windSpeed = weatherData.windSpeed
         var temperature = weatherData.temperature
 

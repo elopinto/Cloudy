@@ -1,8 +1,8 @@
 //
-//  SettingsViewController.swift
+//  SettingsTableViewController.swift
 //  Cloudy
 //
-//  Created by Bart Jacobs on 03/10/16.
+//  Created by Edward LoPinto on 12/15/16.
 //  Copyright © 2016 Cocoacasts. All rights reserved.
 //
 
@@ -14,153 +14,92 @@ protocol SettingsViewControllerDelegate {
     func controllerDidChangeTemperatureNotation(controller: SettingsViewController)
 }
 
-class SettingsViewController: UIViewController {
-
-    // MARK: - Properties
-
-    @IBOutlet var tableView: UITableView!
-
-    // MARK: -
+class SettingsViewController: UITableViewController {
 
     var delegate: SettingsViewControllerDelegate?
 
-    // MARK: - View Life Cycle
+    // MARK: - Properties
 
-    override func viewDidLoad() {
-        super.viewDidLoad()
-
-        title = "Settings"
-
-        setupView()
+    var timeNotation: TimeNotation {
+        get {
+            return UserDefaults.timeNotation()
+        }
+        set {
+            UserDefaults.setNotation(newValue, for: UserDefaultsKeys.timeNotation)
+            delegate?.controllerDidChangeTimeNotation(controller: self)
+        }
     }
 
-    // MARK: - View Methods
-
-    private func setupView() {
-        setupTableView()
+    var unitsNotation: UnitsNotation {
+        get {
+            return UserDefaults.unitsNotation()
+        }
+        set {
+            UserDefaults.setNotation(newValue, for: UserDefaultsKeys.unitsNotation)
+            delegate?.controllerDidChangeUnitsNotation(controller: self)
+        }
     }
 
-    private func updateView() {
-
+    var temperatureNotation: TemperatureNotation {
+        get {
+            return UserDefaults.temperatureNotation()
+        }
+        set {
+            UserDefaults.setNotation(newValue, for: UserDefaultsKeys.temperatureNotation)
+            delegate?.controllerDidChangeTemperatureNotation(controller: self)
+        }
     }
 
-    // MARK: -
+    // MARK: - UITableViewDataSource
 
-    private func setupTableView() {
-        tableView.separatorInset = UIEdgeInsets.zero
-    }
+    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = super.tableView(tableView, cellForRowAt: indexPath)
 
-}
-
-extension SettingsViewController: UITableViewDataSource, UITableViewDelegate {
-
-    private enum Section: Int {
-        case time
-        case units
-        case temperature
-
-        var numberOfRows: Int {
-            return 2
+        func addCheckmarkToCell<T: RawRepresentable>(for notation: T) where T.RawValue==Int {
+            if indexPath.row == notation.rawValue {
+                cell.accessoryType = .checkmark
+            } else {
+                cell.accessoryType = .none
+            }
         }
 
-        static var count: Int {
-            return (Section.temperature.rawValue + 1)
-        }
-
-    }
-
-    // MARK: - Table View Data Source Methods
-
-    func numberOfSections(in tableView: UITableView) -> Int {
-        return Section.count
-    }
-
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        guard let section = Section(rawValue: section) else { fatalError("Unexpected Section") }
-        return section.numberOfRows
-    }
-
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        guard let section = Section(rawValue: indexPath.section) else { fatalError("Unexpected Section") }
-        guard let cell = tableView.dequeueReusableCell(withIdentifier: SettingsTableViewCell.reuseIdentifier, for: indexPath) as? SettingsTableViewCell else { fatalError("Unexpected Table View Cell") }
-
-        switch section {
-        case .time:
-            cell.mainLabel.text = (indexPath.row == 0) ? "12 Hour" : "24 Hour"
-
-            let timeNotation = UserDefaults.timeNotation()
-            if indexPath.row == timeNotation.rawValue {
-                cell.accessoryType = .checkmark
-            } else {
-                cell.accessoryType = .none
-            }
-        case .units:
-            cell.mainLabel.text = (indexPath.row == 0) ? "Imperial" : "Metric"
-
-            let unitsNotation = UserDefaults.unitsNotation()
-            if indexPath.row == unitsNotation.rawValue {
-                cell.accessoryType = .checkmark
-            } else {
-                cell.accessoryType = .none
-            }
-        case .temperature:
-            cell.mainLabel.text = (indexPath.row == 0) ? "Fahrenheit" : "Celcius"
-
-            let temperatureNotation = UserDefaults.temperatureNotation()
-            if indexPath.row == temperatureNotation.rawValue {
-                cell.accessoryType = .checkmark
-            } else {
-                cell.accessoryType = .none
-            }
+        if indexPath.section == 0 {
+            addCheckmarkToCell(for: timeNotation)
+        } else if indexPath.section == 1 {
+            addCheckmarkToCell(for: unitsNotation)
+        } else if indexPath.section == 2 {
+            addCheckmarkToCell(for: temperatureNotation)
         }
 
         return cell
     }
 
-    // MARK: - Table View Delegate Methods
+    // MARK: - UITableViewDelegate
 
-    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        tableView.deselectRow(at: indexPath, animated: true)
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        tableView.deselectRow(at: indexPath, animated: false)
 
-        guard let section = Section(rawValue: indexPath.section) else { fatalError("Unexpected Section") }
-
-        switch section {
-        case .time:
-            let timeNotation = UserDefaults.timeNotation()
-            guard indexPath.row != timeNotation.rawValue else { return }
-
-            if let newTimeNotation = TimeNotation(rawValue: indexPath.row) {
-                // Update User Defaults
-                UserDefaults.setTimeNotation(timeNotation: newTimeNotation)
-
-                // Notify Delegate
-                delegate?.controllerDidChangeTimeNotation(controller: self)
+        func manageSelection<T: RawRepresentable>(for notation: inout T) where T.RawValue==Int {
+            guard let newNotation = T(rawValue: indexPath.row) else {
+                return
             }
-        case .units:
-            let unitsNotation = UserDefaults.unitsNotation()
-            guard indexPath.row != unitsNotation.rawValue else { return }
 
-            if let newUnitsNotation = UnitsNotation(rawValue: indexPath.row) {
-                // Update User Defaults
-                UserDefaults.setUnitsNotation(unitsNotation: newUnitsNotation)
+            let previousSelectedIndexPath = IndexPath(row: notation.rawValue, section: indexPath.section)
+            let previousCell = tableView.cellForRow(at: previousSelectedIndexPath)
+            previousCell?.accessoryType = .none
 
-                // Notify Delegate
-                delegate?.controllerDidChangeUnitsNotation(controller: self)
-            }
-        case .temperature:
-            let temperatureNotation = UserDefaults.temperatureNotation()
-            guard indexPath.row != temperatureNotation.rawValue else { return }
-
-            if let newTemperatureNotation = TemperatureNotation(rawValue: indexPath.row) {
-                // Update User Defaults
-                UserDefaults.setTemperatureNotation(temperatureNotation: newTemperatureNotation)
-
-                // Notify Delegate
-                delegate?.controllerDidChangeTemperatureNotation(controller: self)
-            }
+            let newCell = tableView.cellForRow(at: indexPath)
+            newCell?.accessoryType = .checkmark
+            notation = newNotation
         }
 
-        tableView.reloadSections(IndexSet(integer: indexPath.section), with: .none)
+        if indexPath.section == 0 {
+            manageSelection(for: &timeNotation)
+        } else if indexPath.section == 1 {
+            manageSelection(for: &unitsNotation)
+        } else if indexPath.section == 2 {
+            manageSelection(for: &temperatureNotation)
+        }
     }
 
 }
