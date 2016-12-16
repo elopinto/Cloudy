@@ -8,42 +8,11 @@
 
 import UIKit
 
-class WeatherViewController: UIViewController {
-    
-    // MARK: - View Life Cycle
+protocol WeatherViewController {
+    func imageForIcon(withName name: String) -> UIImage?
+}
 
-    override func viewDidLoad() {
-        super.viewDidLoad()
-
-        setupView()
-    }
-
-    // MARK: - Public Interface
-
-    func reloadData() {
-        
-    }
-
-    // MARK: - View Methods
-
-    private func setupView() {
-        // Configure Message Label
-//        messageLabel.isHidden = true
-//
-//        // Configure Weather Data Container
-//        weatherDataContainer.isHidden = true
-//
-//        // Configure Activity Indicator View
-//        activityIndicatorView.startAnimating()
-//        activityIndicatorView.hidesWhenStopped = true
-    }
-
-    private func updateView() {
-
-    }
-
-    // MARK: - Helper Methods
-
+extension WeatherViewController where Self: UIViewController {
     func imageForIcon(withName name: String) -> UIImage? {
         switch name {
         case "clear-day":
@@ -62,5 +31,4 @@ class WeatherViewController: UIViewController {
             return UIImage(named: "clear-day")
         }
     }
-
 }

@@ -42,7 +42,7 @@ class RootViewController: UIViewController, CLLocationManagerDelegate, DayViewCo
 
     private let dataManager = DataManager(baseURL: API.AuthenticatedBaseURL)
 
-    private lazy var locationManager: CLLocationManager = {
+    private let locationManager: CLLocationManager = {
         // Initialize Location Manager
         let locationManager = CLLocationManager()
 
@@ -58,7 +58,7 @@ class RootViewController: UIViewController, CLLocationManagerDelegate, DayViewCo
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        setupView()
+        animateDataFetch()
         setupNotificationHandling()
     }
 
@@ -102,7 +102,7 @@ class RootViewController: UIViewController, CLLocationManagerDelegate, DayViewCo
 
     // MARK: - View Methods
 
-    private func setupView() {
+    private func animateDataFetch() {
         dayContainerView.isHidden = true
         weekContainerView.isHidden = true
 
@@ -110,18 +110,18 @@ class RootViewController: UIViewController, CLLocationManagerDelegate, DayViewCo
         weekActivityIndicator.startAnimating()
     }
 
-    private func updateView() {
-        dayContainerView.isHidden = false
-        weekContainerView.isHidden = false
-
+    private func stopAnimatingDataFetch(fetchSuccessful: Bool) {
         dayActivityIndicator.stopAnimating()
         weekActivityIndicator.stopAnimating()
-    }
 
-    private func showErrorMessage() {
-        for label in [dayLabel, weekLabel] {
-            label?.isHidden = false
-            label?.text = "Unable to get data from Cloudy"
+        if fetchSuccessful {
+            dayContainerView.isHidden = false
+            weekContainerView.isHidden = false
+        } else {
+            for label in [dayLabel, weekLabel] {
+                label?.isHidden = false
+                label?.text = "Unable to fetch Couldy data"
+            }
         }
     }
 
@@ -164,9 +164,9 @@ class RootViewController: UIViewController, CLLocationManagerDelegate, DayViewCo
         dataManager.weatherDataForLocation(latitude: latitude, longitude: longitude) { (response, error) in
             if let error = error {
                 print(error)
-                self.showErrorMessage()
+                self.stopAnimatingDataFetch(fetchSuccessful: false)
             } else if let response = response {
-                self.updateView()
+                self.stopAnimatingDataFetch(fetchSuccessful: true)
                 // Configure Day View Controller
                 self.dayViewController.now = response
 
@@ -221,17 +221,7 @@ class RootViewController: UIViewController, CLLocationManagerDelegate, DayViewCo
 
     // MARK: - SettingsViewControllerDelegate
 
-    func controllerDidChangeTimeNotation(controller: SettingsViewController) {
-        dayViewController.reloadData()
-        weekViewController.reloadData()
-    }
-
-    func controllerDidChangeUnitsNotation(controller: SettingsViewController) {
-        dayViewController.reloadData()
-        weekViewController.reloadData()
-    }
-
-    func controllerDidChangeTemperatureNotation(controller: SettingsViewController) {
+    func controllerDidChangeNotation(controller: SettingsViewController) {
         dayViewController.reloadData()
         weekViewController.reloadData()
     }

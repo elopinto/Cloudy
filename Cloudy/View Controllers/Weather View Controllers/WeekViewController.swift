@@ -12,11 +12,7 @@ protocol WeekViewControllerDelegate {
     func controllerDidRefresh(controller: WeekViewController)
 }
 
-class WeekViewController: WeatherViewController {
-
-    // MARK: - Properties
-
-    @IBOutlet var tableView: UITableView!
+class WeekViewController: UITableViewController, WeatherViewController {
 
     // MARK: -
 
@@ -32,13 +28,13 @@ class WeekViewController: WeatherViewController {
 
     // MARK: -
 
-    fileprivate lazy var dayFormatter: DateFormatter = {
+    private let dayFormatter: DateFormatter = {
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "EEEE"
         return dateFormatter
     }()
 
-    fileprivate lazy var dateFormatter: DateFormatter = {
+    private let dateFormatter: DateFormatter = {
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "MMMM d"
         return dateFormatter
@@ -48,22 +44,15 @@ class WeekViewController: WeatherViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-
-        setupView()
     }
 
     // MARK: - Public Interface
 
-    override func reloadData() {
+    func reloadData() {
         updateView()
     }
     
     // MARK: - View Methods
-
-    private func setupView() {
-        setupTableView()
-        setupRefreshControl()
-    }
 
     private func updateView() {
         tableView.refreshControl?.endRefreshing()
@@ -73,21 +62,10 @@ class WeekViewController: WeatherViewController {
         }
     }
 
-    // MARK: -
+    // MARK: - Actions
 
-    private func setupTableView() {
-        tableView.separatorInset = UIEdgeInsets.zero
-    }
-
-    private func setupRefreshControl() {
-        // Initialize Refresh Control
-        let refreshControl = UIRefreshControl()
-
-        // Configure Refresh Control
-        refreshControl.addTarget(self, action: #selector(WeekViewController.didRefresh(sender:)), for: .valueChanged)
-
-        // Update Table View)
-        tableView.refreshControl = refreshControl
+    @IBAction func didRefresh(_ sender: UIRefreshControl) {
+        delegate?.controllerDidRefresh(controller: self)
     }
 
     // MARK: -
@@ -96,26 +74,18 @@ class WeekViewController: WeatherViewController {
         tableView.reloadData()
     }
 
-    // MARK: - Actions
+    // MARK: - UITableViewDataSource
 
-    func didRefresh(sender: UIRefreshControl) {
-        delegate?.controllerDidRefresh(controller: self)
-    }
-    
-}
-
-extension WeekViewController: UITableViewDataSource {
-
-    func numberOfSections(in tableView: UITableView) -> Int {
+    override func numberOfSections(in tableView: UITableView) -> Int {
         return week == nil ? 0 : 1
     }
 
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         guard let week = week else { return 0 }
         return week.count
     }
 
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: WeatherDayTableViewCell.reuseIdentifier, for: indexPath) as? WeatherDayTableViewCell else { fatalError("Unexpected Table View Cell") }
 
         if let week = week {

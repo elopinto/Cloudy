@@ -9,9 +9,7 @@
 import UIKit
 
 protocol SettingsViewControllerDelegate {
-    func controllerDidChangeTimeNotation(controller: SettingsViewController)
-    func controllerDidChangeUnitsNotation(controller: SettingsViewController)
-    func controllerDidChangeTemperatureNotation(controller: SettingsViewController)
+    func controllerDidChangeNotation(controller: SettingsViewController)
 }
 
 class SettingsViewController: UITableViewController {
@@ -26,7 +24,7 @@ class SettingsViewController: UITableViewController {
         }
         set {
             UserDefaults.setNotation(newValue, for: UserDefaultsKeys.timeNotation)
-            delegate?.controllerDidChangeTimeNotation(controller: self)
+            delegate?.controllerDidChangeNotation(controller: self)
         }
     }
 
@@ -36,7 +34,7 @@ class SettingsViewController: UITableViewController {
         }
         set {
             UserDefaults.setNotation(newValue, for: UserDefaultsKeys.unitsNotation)
-            delegate?.controllerDidChangeUnitsNotation(controller: self)
+            delegate?.controllerDidChangeNotation(controller: self)
         }
     }
 
@@ -46,7 +44,7 @@ class SettingsViewController: UITableViewController {
         }
         set {
             UserDefaults.setNotation(newValue, for: UserDefaultsKeys.temperatureNotation)
-            delegate?.controllerDidChangeTemperatureNotation(controller: self)
+            delegate?.controllerDidChangeNotation(controller: self)
         }
     }
 

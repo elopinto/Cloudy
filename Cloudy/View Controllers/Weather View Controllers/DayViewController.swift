@@ -12,7 +12,7 @@ protocol DayViewControllerDelegate {
     func controllerDidTapSettingsButton(controller: DayViewController)
 }
 
-class DayViewController: WeatherViewController {
+class DayViewController: UIViewController, WeatherViewController {
 
     // MARK: - Properties
 
@@ -39,21 +39,15 @@ class DayViewController: WeatherViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-
-        setupView()
     }
 
     // MARK: - Public Interface
 
-    override func reloadData() {
+    func reloadData() {
         updateView()
     }
 
     // MARK: - View Methods
-
-    private func setupView() {
-
-    }
 
     private func updateView() {
         if let now = now {

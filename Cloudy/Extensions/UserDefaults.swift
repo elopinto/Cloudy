@@ -38,10 +38,6 @@ extension UserDefaults {
         return TimeNotation(rawValue: storedValue) ?? TimeNotation.twelveHour
     }
 
-    static func setTimeNotation(timeNotation: TimeNotation) {
-        UserDefaults.standard.set(timeNotation.rawValue, forKey: UserDefaultsKeys.timeNotation)
-    }
-
     // MARK: - Units Notation
     
     static func unitsNotation() -> UnitsNotation {
@@ -49,19 +45,11 @@ extension UserDefaults {
         return UnitsNotation(rawValue: storedValue) ?? UnitsNotation.imperial
     }
 
-    static func setUnitsNotation(unitsNotation: UnitsNotation) {
-        UserDefaults.standard.set(unitsNotation.rawValue, forKey: UserDefaultsKeys.unitsNotation)
-    }
-
     // MARK: - Temperature Notation
     
     static func temperatureNotation() -> TemperatureNotation {
         let storedValue = UserDefaults.standard.integer(forKey: UserDefaultsKeys.temperatureNotation)
         return TemperatureNotation(rawValue: storedValue) ?? TemperatureNotation.fahrenheit
-    }
-
-    static func setTemperatureNotation(temperatureNotation: TemperatureNotation) {
-        UserDefaults.standard.set(temperatureNotation.rawValue, forKey: UserDefaultsKeys.temperatureNotation)
     }
 
     static func setNotation<T: RawRepresentable>(_ notation: T, for key: String) where T.RawValue==Int {

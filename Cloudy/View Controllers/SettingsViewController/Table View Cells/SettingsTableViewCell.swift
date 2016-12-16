@@ -14,17 +14,10 @@ class SettingsTableViewCell: UITableViewCell {
 
     static let reuseIdentifier = "SettingsCell"
 
-    // MARK: - Properties
-
-    @IBOutlet var mainLabel: UILabel!
-
     // MARK: - Initialization
 
     override func awakeFromNib() {
         super.awakeFromNib()
-
-        // Configure Cell
-        selectionStyle = .none
     }
 
 }
