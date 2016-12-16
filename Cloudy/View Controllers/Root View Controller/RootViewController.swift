@@ -10,7 +10,7 @@ import UIKit
 import CoreLocation
 
 class RootViewController: UIViewController, CLLocationManagerDelegate, DayViewControllerDelegate,
-    WeekViewControllerDelegate, SettingsViewControllerDelegate {
+    WeekViewControllerDelegate, MySettingsViewControllerDelegate {
 
     // MARK: - Constants
 
@@ -83,7 +83,7 @@ class RootViewController: UIViewController, CLLocationManagerDelegate, DayViewCo
             }
         case SegueSettingsView:
             if let navigationController = segue.destination as? UINavigationController,
-               let settingsViewController = navigationController.topViewController as? SettingsViewController {
+               let settingsViewController = navigationController.topViewController as? MySettingsTableViewController {
                 settingsViewController.delegate = self
             } else {
                 fatalError("Unexpected Destination View Controller")
@@ -197,17 +197,17 @@ class RootViewController: UIViewController, CLLocationManagerDelegate, DayViewCo
 
     // MARK: - SettingsViewControllerDelegate
 
-    func controllerDidChangeTimeNotation(controller: SettingsViewController) {
+    func controllerDidChangeTimeNotation(controller: MySettingsTableViewController) {
         dayViewController.reloadData()
         weekViewController.reloadData()
     }
 
-    func controllerDidChangeUnitsNotation(controller: SettingsViewController) {
+    func controllerDidChangeUnitsNotation(controller: MySettingsTableViewController) {
         dayViewController.reloadData()
         weekViewController.reloadData()
     }
 
-    func controllerDidChangeTemperatureNotation(controller: SettingsViewController) {
+    func controllerDidChangeTemperatureNotation(controller: MySettingsTableViewController) {
         dayViewController.reloadData()
         weekViewController.reloadData()
     }
