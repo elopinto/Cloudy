@@ -26,7 +26,7 @@
                                 <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
                                 <prototypes>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="SettingsCell" id="emW-of-ff4" customClass="SettingsTableViewCell" customModule="Cloudy" customModuleProvider="target">
-                                        <rect key="frame" x="0.0" y="56" width="375" height="44"/>
+                                        <rect key="frame" x="0.0" y="55.5" width="375" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="emW-of-ff4" id="8BW-e7-TtL">
                                             <rect key="frame" x="0.0" y="0.0" width="375" height="43.5"/>
@@ -78,7 +78,7 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="SH1-6a-qzE" userLabel="First Responder" sceneMemberID="firstResponder"/>
                 <exit id="AqP-io-VjE" userLabel="Exit" sceneMemberID="exit"/>
             </objects>
-            <point key="canvasLocation" x="1344.8" y="80.50974512743629"/>
+            <point key="canvasLocation" x="1353" y="-408"/>
         </scene>
         <!--Settings-->
         <scene sceneID="EFG-uK-Ulp">
@@ -209,7 +209,7 @@
                             <outlet property="delegate" destination="rju-oa-PCS" id="Ume-C8-eF0"/>
                         </connections>
                     </tableView>
-                    <navigationItem key="navigationItem" id="DWe-Ba-s2S">
+                    <navigationItem key="navigationItem" title="Settings" id="DWe-Ba-s2S">
                         <barButtonItem key="rightBarButtonItem" style="plain" systemItem="done" id="noc-ha-CYe">
                             <connections>
                                 <segue destination="QJl-ab-eYo" kind="unwind" unwindAction="unwindToRootViewControllerWithSegue:" id="KAy-kY-qnP"/>
@@ -560,4 +560,5 @@
     <resources>
         <image name="button-settings-normal" width="28" height="28"/>
     </resources>
+    <color key="tintColor" red="0.99745291471481323" green="0.46686261892318726" blue="0.42665806412696838" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
 </document>
