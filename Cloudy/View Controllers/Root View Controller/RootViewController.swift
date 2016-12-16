@@ -23,6 +23,12 @@ class RootViewController: UIViewController, CLLocationManagerDelegate, DayViewCo
     @IBOutlet private var dayViewController: DayViewController!
     @IBOutlet private var weekViewController: WeekViewController!
 
+    @IBOutlet weak var dayActivityIndicator: UIActivityIndicatorView!
+    @IBOutlet weak var weekActivityIndicator: UIActivityIndicatorView!
+    
+    @IBOutlet weak var dayContainerView: UIView!
+    @IBOutlet weak var weekContainerView: UIView!
+    
     // MARK: -
 
     private var currentLocation: CLLocation? {
@@ -96,7 +102,13 @@ class RootViewController: UIViewController, CLLocationManagerDelegate, DayViewCo
     // MARK: - View Methods
 
     private func setupView() {
+        // Configure Weather Data Container
+        dayContainerView.isHidden = true
+        weekContainerView.isHidden = true
 
+        // Configure Activity Indicator View
+        dayActivityIndicator.startAnimating()
+        weekActivityIndicator.startAnimating()
     }
 
     private func updateView() {
