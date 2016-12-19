@@ -18,23 +18,23 @@ class SettingsViewController: UITableViewController {
 
     // MARK: - Properties
 
-    lazy var timeViewModel: SettingsViewViewModel<TimeNotation> = {
-        return SettingsViewViewModel<TimeNotation>(didChangeSetting: { (viewModel) in
-            self.delegate?.controllerDidChangeNotation(controller: self)
-        })
-    }()
+    var timeViewModel = SettingsViewViewModel<TimeNotation>()
+    var unitsViewModel = SettingsViewViewModel<UnitsNotation>()
+    var temperatureViewModel = SettingsViewViewModel<TemperatureNotation>()
 
-    lazy var unitsViewModel: SettingsViewViewModel<UnitsNotation> = {
-        return SettingsViewViewModel<UnitsNotation>(didChangeSetting: { (viewModel) in
-            self.delegate?.controllerDidChangeNotation(controller: self)
-        })
-    }()
+    override func viewDidLoad() {
+        super.viewDidLoad()
 
-    lazy var temperatureViewModel: SettingsViewViewModel<TemperatureNotation> = {
-        return SettingsViewViewModel<TemperatureNotation>(didChangeSetting: { (viewModel) in
-            self.delegate?.controllerDidChangeNotation(controller: self)
-        })
-    }()
+        func didChangeSetting<T: Notation>() -> ((SettingsViewViewModel<T>) -> Void) where T.RawValue==Int {
+            return { [unowned self] (viewModel) in
+                self.delegate?.controllerDidChangeNotation(controller: self)
+            }
+        }
+
+        timeViewModel.didChangeSetting = didChangeSetting()
+        unitsViewModel.didChangeSetting = didChangeSetting()
+        temperatureViewModel.didChangeSetting = didChangeSetting()
+    }
 
     // MARK: - UITableViewDataSource
 
@@ -57,11 +57,11 @@ class SettingsViewController: UITableViewController {
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: false)
 
-        func updateCell<T: Notation>(with viewModel: inout SettingsViewViewModel<T>) where T.RawValue==Int {
+        func updateCells<T: Notation>(with viewModel: inout SettingsViewViewModel<T>) where T.RawValue==Int {
             let previousIndexPath = IndexPath(row: viewModel.setting.rawValue, section: indexPath.section)
 
             do {
-                try viewModel.updateSetting(at: indexPath.row)
+                try viewModel.updateSetting(with: indexPath.row)
                 let previousCell = tableView.cellForRow(at: previousIndexPath)
                 previousCell?.accessoryType = viewModel.accessoryType(for: previousIndexPath.row)
 
@@ -73,11 +73,11 @@ class SettingsViewController: UITableViewController {
         }
 
         if indexPath.section == 0 {
-            updateCell(with: &timeViewModel)
+            updateCells(with: &timeViewModel)
         } else if indexPath.section == 1 {
-            updateCell(with: &unitsViewModel)
+            updateCells(with: &unitsViewModel)
         } else if indexPath.section == 2 {
-            updateCell(with: &temperatureViewModel)
+            updateCells(with: &temperatureViewModel)
         }
     }
 
