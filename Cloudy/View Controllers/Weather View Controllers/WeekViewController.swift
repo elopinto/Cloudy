@@ -12,7 +12,7 @@ protocol WeekViewControllerDelegate {
     func controllerDidRefresh(controller: WeekViewController)
 }
 
-class WeekViewController: UITableViewController, WeatherViewController {
+class WeekViewController: UITableViewController {
 
     // MARK: -
 
@@ -20,7 +20,7 @@ class WeekViewController: UITableViewController, WeatherViewController {
     
     // MARK: -
 
-    var week: [WeatherDayData]? {
+    var week: WeekTableViewViewModel? {
         didSet {
             updateView()
         }
@@ -57,8 +57,8 @@ class WeekViewController: UITableViewController, WeatherViewController {
     private func updateView() {
         tableView.refreshControl?.endRefreshing()
 
-        if let week = week {
-            updateWeatherDataContainer(withWeatherData: week)
+        if week != nil {
+            updateWeatherDataContainer()
         }
     }
 
@@ -70,54 +70,33 @@ class WeekViewController: UITableViewController, WeatherViewController {
 
     // MARK: -
 
-    private func updateWeatherDataContainer(withWeatherData weatherData: [WeatherDayData]) {
+    private func updateWeatherDataContainer() {
         tableView.reloadData()
     }
 
     // MARK: - UITableViewDataSource
 
     override func numberOfSections(in tableView: UITableView) -> Int {
-        return week == nil ? 0 : 1
+        return week?.numberOfSections ?? 0
     }
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        guard let week = week else { return 0 }
-        return week.count
+        return week?.numberOfCells ?? 0
     }
 
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        guard let cell = tableView.dequeueReusableCell(withIdentifier: WeatherDayTableViewCell.reuseIdentifier, for: indexPath) as? WeatherDayTableViewCell else { fatalError("Unexpected Table View Cell") }
+        guard let cell = tableView.dequeueReusableCell(
+            withIdentifier: WeatherDayTableViewCell.reuseIdentifier,
+            for: indexPath) as? WeatherDayTableViewCell else {
+            fatalError("Unexpected Table View Cell")
+        }
 
-        if let week = week {
-            // Fetch Weather Data
-            let weatherData = week[indexPath.row]
-
-            var windSpeed = weatherData.windSpeed
-            var temperatureMin = weatherData.temperatureMin
-            var temperatureMax = weatherData.temperatureMax
-
-            if TemperatureNotation.getNotation() != .fahrenheit {
-                temperatureMin = temperatureMin.toCelcius()
-                temperatureMax = temperatureMax.toCelcius()
-            }
-
-            // Configure Cell
-            cell.dayLabel.text = dayFormatter.string(from: weatherData.time)
-            cell.dateLabel.text = dateFormatter.string(from: weatherData.time)
-
-            let min = String(format: "%.0f°", temperatureMin)
-            let max = String(format: "%.0f°", temperatureMax)
-
-            cell.temperatureLabel.text = "\(min) - \(max)"
-
-            if UnitsNotation.getNotation() != .imperial {
-                windSpeed = windSpeed.toKPH()
-                cell.windSpeedLabel.text = String(format: "%.f KPH", windSpeed)
-            } else {
-                cell.windSpeedLabel.text = String(format: "%.f MPH", windSpeed)
-            }
-
-            cell.iconImageView.image = imageForIcon(withName: weatherData.icon)
+        if let dayViewModel = week?.viewModelForItem(at: indexPath.row) {
+            cell.dayLabel.text = dayViewModel.day
+            cell.dateLabel.text = dayViewModel.date
+            cell.temperatureLabel.text = dayViewModel.temperature
+            cell.windSpeedLabel.text = dayViewModel.windSpeed
+            cell.iconImageView.image = dayViewModel.image
         }
 
         return cell

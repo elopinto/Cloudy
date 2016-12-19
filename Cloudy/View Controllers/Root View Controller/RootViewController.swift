@@ -168,10 +168,10 @@ class RootViewController: UIViewController, CLLocationManagerDelegate, DayViewCo
             } else if let response = response {
                 self.stopAnimatingDataFetch(fetchSuccessful: true)
                 // Configure Day View Controller
-                self.dayViewController.now = response
+                self.dayViewController.now = DayViewViewModel(weatherData: response)
 
                 // Configure Week View Controller
-                self.weekViewController.week = response.dailyData
+                self.weekViewController.week = WeekTableViewViewModel(weekWeatherData: response.dailyData)
             }
         }
     }
