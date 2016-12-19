@@ -9,6 +9,8 @@
 /* Begin PBXBuildFile section */
 		2B1E5D541E03418A00BEBAA2 /* SettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2B1E5D531E03418A00BEBAA2 /* SettingsViewController.swift */; };
 		2BA03DF71E0633DB00052699 /* SettingsViewViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2BA03DF61E0633DB00052699 /* SettingsViewViewModel.swift */; };
+		2BFCD2FE1E087ADD0067B8CF /* DayViewViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2BFCD2FD1E087ADD0067B8CF /* DayViewViewModel.swift */; };
+		2BFCD3001E08822C0067B8CF /* UIImage+Cloudy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2BFCD2FF1E08822C0067B8CF /* UIImage+Cloudy.swift */; };
 		CC08B9DE1DA20DB400754A85 /* SettingsTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC08B9DD1DA20DB400754A85 /* SettingsTableViewCell.swift */; };
 		CC08B9E11DA2169400754A85 /* UserDefaults.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC08B9E01DA2169400754A85 /* UserDefaults.swift */; };
 		CC08B9E31DA2208800754A85 /* Conversions.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC08B9E21DA2208800754A85 /* Conversions.swift */; };
@@ -31,6 +33,8 @@
 /* Begin PBXFileReference section */
 		2B1E5D531E03418A00BEBAA2 /* SettingsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsViewController.swift; sourceTree = "<group>"; };
 		2BA03DF61E0633DB00052699 /* SettingsViewViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsViewViewModel.swift; sourceTree = "<group>"; };
+		2BFCD2FD1E087ADD0067B8CF /* DayViewViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DayViewViewModel.swift; sourceTree = "<group>"; };
+		2BFCD2FF1E08822C0067B8CF /* UIImage+Cloudy.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIImage+Cloudy.swift"; sourceTree = "<group>"; };
 		CC08B9DD1DA20DB400754A85 /* SettingsTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsTableViewCell.swift; sourceTree = "<group>"; };
 		CC08B9E01DA2169400754A85 /* UserDefaults.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserDefaults.swift; sourceTree = "<group>"; };
 		CC08B9E21DA2208800754A85 /* Conversions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Conversions.swift; sourceTree = "<group>"; };
@@ -86,6 +90,7 @@
 			children = (
 				CC08B9E21DA2208800754A85 /* Conversions.swift */,
 				CC08B9E01DA2169400754A85 /* UserDefaults.swift */,
+				2BFCD2FF1E08822C0067B8CF /* UIImage+Cloudy.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -189,6 +194,7 @@
 				CC89B4411D9FE5C6006BFD6E /* WeekViewController.swift */,
 				CC7854CC1D9FF99700E7836D /* WeatherViewController.swift */,
 				CC63745C1DA0F535002E68DC /* Table View Cells */,
+				2BFCD2FD1E087ADD0067B8CF /* DayViewViewModel.swift */,
 			);
 			path = "Weather View Controllers";
 			sourceTree = "<group>";
@@ -299,6 +305,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				2BFCD2FE1E087ADD0067B8CF /* DayViewViewModel.swift in Sources */,
 				CC08B9E31DA2208800754A85 /* Conversions.swift in Sources */,
 				CC89B4481D9FE8D3006BFD6E /* Configuration.swift in Sources */,
 				CC7854CD1D9FF99700E7836D /* WeatherViewController.swift in Sources */,
@@ -311,6 +318,7 @@
 				CC89B4421D9FE5C6006BFD6E /* WeekViewController.swift in Sources */,
 				CC89B4501D9FEC2E006BFD6E /* WeatherData.swift in Sources */,
 				CC63745E1DA0F557002E68DC /* WeatherDayTableViewCell.swift in Sources */,
+				2BFCD3001E08822C0067B8CF /* UIImage+Cloudy.swift in Sources */,
 				2B1E5D541E03418A00BEBAA2 /* SettingsViewController.swift in Sources */,
 				CC89B4401D9FE5BC006BFD6E /* DayViewController.swift in Sources */,
 				2BA03DF71E0633DB00052699 /* SettingsViewViewModel.swift in Sources */,

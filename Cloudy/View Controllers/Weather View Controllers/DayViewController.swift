@@ -12,7 +12,7 @@ protocol DayViewControllerDelegate {
     func controllerDidTapSettingsButton(controller: DayViewController)
 }
 
-class DayViewController: UIViewController, WeatherViewController {
+class DayViewController: UIViewController {
 
     // MARK: - Properties
 
@@ -29,7 +29,7 @@ class DayViewController: UIViewController, WeatherViewController {
 
     // MARK: -
 
-    var now: WeatherData? {
+    var now: DayViewViewModel? {
         didSet {
             updateView()
         }
@@ -51,47 +51,19 @@ class DayViewController: UIViewController, WeatherViewController {
 
     private func updateView() {
         if let now = now {
-            updateWeatherDataContainer(withWeatherData: now)
+            updateWeatherDataContainer(with: now)
         }
     }
 
     // MARK: -
 
-    private func updateWeatherDataContainer(withWeatherData weatherData: WeatherData) {
-        var windSpeed = weatherData.windSpeed
-        var temperature = weatherData.temperature
-
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "EEE, MMMM d"
-        dateLabel.text = dateFormatter.string(from: weatherData.time)
-
-        let timeFormatter = DateFormatter()
-
-        if TimeNotation.getNotation() == .twelveHour {
-            timeFormatter.dateFormat = "hh:mm a"
-        } else {
-            timeFormatter.dateFormat = "HH:mm"
-        }
-
-        timeLabel.text = timeFormatter.string(from: weatherData.time)
-
-        descriptionLabel.text = weatherData.summary
-
-        if TemperatureNotation.getNotation() != .fahrenheit {
-            temperature = temperature.toCelcius()
-            temperatureLabel.text = String(format: "%.1f °C", temperature)
-        } else {
-            temperatureLabel.text = String(format: "%.1f °F", temperature)
-        }
-
-        if UnitsNotation.getNotation() != .imperial {
-            windSpeed = windSpeed.toKPH()
-            windSpeedLabel.text = String(format: "%.f KPH", windSpeed)
-        } else {
-            windSpeedLabel.text = String(format: "%.f MPH", windSpeed)
-        }
-
-        iconImageView.image = imageForIcon(withName: weatherData.icon)
+    private func updateWeatherDataContainer(with viewModel: DayViewViewModel) {
+        dateLabel.text = viewModel.date
+        timeLabel.text = viewModel.time
+        windSpeedLabel.text = viewModel.windSpeed
+        temperatureLabel.text = viewModel.temperature
+        descriptionLabel.text = viewModel.description
+        iconImageView.image = viewModel.image
     }
 
     // MARK: - Actions

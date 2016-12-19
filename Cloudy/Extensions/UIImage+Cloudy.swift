@@ -1,19 +1,16 @@
 //
-//  WeatherViewController.swift
+//  UIImage+Cloudy.swift
 //  Cloudy
 //
-//  Created by Bart Jacobs on 01/10/16.
+//  Created by Edward LoPinto on 12/19/16.
 //  Copyright © 2016 Cocoacasts. All rights reserved.
 //
 
 import UIKit
 
-protocol WeatherViewController {
-    func imageForIcon(withName name: String) -> UIImage?
-}
+extension UIImage {
 
-extension WeatherViewController {
-    func imageForIcon(withName name: String) -> UIImage {
+    static func imageForIcon(withName name: String) -> UIImage {
         let image: UIImage
 
         switch name {
@@ -27,4 +24,5 @@ extension WeatherViewController {
 
         return image
     }
+
 }
