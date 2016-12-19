@@ -57,47 +57,12 @@ class RootViewController: UIViewController, CLLocationManagerDelegate, DayViewCo
 
     override func viewDidLoad() {
         super.viewDidLoad()
-
         animateDataFetch()
-        setupNotificationHandling()
-    }
 
-    // MARK: - Navigation
-
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        guard let identifier = segue.identifier else { return }
-
-        switch identifier {
-        case segueDayView:
-            if let dayViewController = segue.destination as? DayViewController {
-                self.dayViewController = dayViewController
-
-                // Configure Day View Controller
-                self.dayViewController.delegate = self
-                
-            } else {
-                fatalError("Unexpected Destination View Controller")
-            }
-        case segueWeekView:
-            if let weekViewController = segue.destination as? WeekViewController {
-                self.weekViewController = weekViewController
-
-                // Configure Day View Controller
-                self.weekViewController.delegate = self
-
-            } else {
-                fatalError("Unexpected Destination View Controller")
-            }
-        case SegueSettingsView:
-            if let navigationController = segue.destination as? UINavigationController,
-               let settingsViewController = navigationController.topViewController as? SettingsViewController {
-                settingsViewController.delegate = self
-            } else {
-                fatalError("Unexpected Destination View Controller")
-            }
-        default:
-            break
-        }
+        NotificationCenter.default.addObserver(self,
+            selector: #selector(RootViewController.applicationDidBecomeActive(notification:)),
+            name: Notification.Name.UIApplicationDidBecomeActive,
+            object: nil)
     }
 
     // MARK: - View Methods
@@ -135,15 +100,6 @@ class RootViewController: UIViewController, CLLocationManagerDelegate, DayViewCo
 
     func applicationDidBecomeActive(notification: Notification) {
         requestLocation()
-    }
-
-    // MARK: - Helper Methods
-
-    private func setupNotificationHandling() {
-        NotificationCenter.default.addObserver(self,
-            selector: #selector(RootViewController.applicationDidBecomeActive(notification:)),
-            name: Notification.Name.UIApplicationDidBecomeActive,
-            object: nil)
     }
 
     private func requestLocation() {
@@ -224,6 +180,43 @@ class RootViewController: UIViewController, CLLocationManagerDelegate, DayViewCo
     func controllerDidChangeNotation(controller: SettingsViewController) {
         dayViewController.reloadData()
         weekViewController.reloadData()
+    }
+
+    // MARK: - Navigation
+
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        guard let identifier = segue.identifier else { return }
+
+        switch identifier {
+        case segueDayView:
+            if let dayViewController = segue.destination as? DayViewController {
+                self.dayViewController = dayViewController
+
+                // Configure Day View Controller
+                self.dayViewController.delegate = self
+            } else {
+                fatalError("Unexpected Destination View Controller")
+            }
+        case segueWeekView:
+            if let weekViewController = segue.destination as? WeekViewController {
+                self.weekViewController = weekViewController
+
+                // Configure Day View Controller
+                self.weekViewController.delegate = self
+            } else {
+                fatalError("Unexpected Destination View Controller")
+            }
+        case SegueSettingsView:
+            if let navigationController = segue.destination as? UINavigationController,
+                let settingsViewController =
+                    navigationController.topViewController as? SettingsViewController {
+                settingsViewController.delegate = self
+            } else {
+                fatalError("Unexpected Destination View Controller")
+            }
+        default:
+            break
+        }
     }
 
 }
