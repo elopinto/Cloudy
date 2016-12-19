@@ -18,55 +18,35 @@ class SettingsViewController: UITableViewController {
 
     // MARK: - Properties
 
-    var timeNotation: TimeNotation {
-        get {
-            return UserDefaults.timeNotation()
-        }
-        set {
-            UserDefaults.setNotation(newValue, for: UserDefaultsKeys.timeNotation)
-            delegate?.controllerDidChangeNotation(controller: self)
-        }
-    }
+    lazy var timeViewModel: SettingsViewViewModel<TimeNotation> = {
+        return SettingsViewViewModel<TimeNotation>(didChangeSetting: { (viewModel) in
+            self.delegate?.controllerDidChangeNotation(controller: self)
+        })
+    }()
 
-    var unitsNotation: UnitsNotation {
-        get {
-            return UserDefaults.unitsNotation()
-        }
-        set {
-            UserDefaults.setNotation(newValue, for: UserDefaultsKeys.unitsNotation)
-            delegate?.controllerDidChangeNotation(controller: self)
-        }
-    }
+    lazy var unitsViewModel: SettingsViewViewModel<UnitsNotation> = {
+        return SettingsViewViewModel<UnitsNotation>(didChangeSetting: { (viewModel) in
+            self.delegate?.controllerDidChangeNotation(controller: self)
+        })
+    }()
 
-    var temperatureNotation: TemperatureNotation {
-        get {
-            return UserDefaults.temperatureNotation()
-        }
-        set {
-            UserDefaults.setNotation(newValue, for: UserDefaultsKeys.temperatureNotation)
-            delegate?.controllerDidChangeNotation(controller: self)
-        }
-    }
+    lazy var temperatureViewModel: SettingsViewViewModel<TemperatureNotation> = {
+        return SettingsViewViewModel<TemperatureNotation>(didChangeSetting: { (viewModel) in
+            self.delegate?.controllerDidChangeNotation(controller: self)
+        })
+    }()
 
     // MARK: - UITableViewDataSource
 
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = super.tableView(tableView, cellForRowAt: indexPath)
 
-        func addCheckmarkToCell<T: RawRepresentable>(for notation: T) where T.RawValue==Int {
-            if indexPath.row == notation.rawValue {
-                cell.accessoryType = .checkmark
-            } else {
-                cell.accessoryType = .none
-            }
-        }
-
         if indexPath.section == 0 {
-            addCheckmarkToCell(for: timeNotation)
+            cell.accessoryType = timeViewModel.accessoryType(for: indexPath.row)
         } else if indexPath.section == 1 {
-            addCheckmarkToCell(for: unitsNotation)
+            cell.accessoryType = unitsViewModel.accessoryType(for: indexPath.row)
         } else if indexPath.section == 2 {
-            addCheckmarkToCell(for: temperatureNotation)
+            cell.accessoryType = temperatureViewModel.accessoryType(for: indexPath.row)
         }
 
         return cell
@@ -77,26 +57,27 @@ class SettingsViewController: UITableViewController {
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: false)
 
-        func manageSelection<T: RawRepresentable>(for notation: inout T) where T.RawValue==Int {
-            guard let newNotation = T(rawValue: indexPath.row) else {
-                return
+        func updateCell<T: Notation>(with viewModel: inout SettingsViewViewModel<T>) where T.RawValue==Int {
+            let previousIndexPath = IndexPath(row: viewModel.setting.rawValue, section: indexPath.section)
+
+            do {
+                try viewModel.updateSetting(at: indexPath.row)
+                let previousCell = tableView.cellForRow(at: previousIndexPath)
+                previousCell?.accessoryType = viewModel.accessoryType(for: previousIndexPath.row)
+
+                let newCell = tableView.cellForRow(at: indexPath)
+                newCell?.accessoryType = viewModel.accessoryType(for: indexPath.row)
+            } catch {
+                print(error.localizedDescription)
             }
-
-            let previousSelectedIndexPath = IndexPath(row: notation.rawValue, section: indexPath.section)
-            let previousCell = tableView.cellForRow(at: previousSelectedIndexPath)
-            previousCell?.accessoryType = .none
-
-            let newCell = tableView.cellForRow(at: indexPath)
-            newCell?.accessoryType = .checkmark
-            notation = newNotation
         }
 
         if indexPath.section == 0 {
-            manageSelection(for: &timeNotation)
+            updateCell(with: &timeViewModel)
         } else if indexPath.section == 1 {
-            manageSelection(for: &unitsNotation)
+            updateCell(with: &unitsViewModel)
         } else if indexPath.section == 2 {
-            manageSelection(for: &temperatureNotation)
+            updateCell(with: &temperatureViewModel)
         }
     }
 

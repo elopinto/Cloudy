@@ -67,7 +67,7 @@ class DayViewController: UIViewController, WeatherViewController {
 
         let timeFormatter = DateFormatter()
 
-        if UserDefaults.timeNotation() == .twelveHour {
+        if TimeNotation.getNotation() == .twelveHour {
             timeFormatter.dateFormat = "hh:mm a"
         } else {
             timeFormatter.dateFormat = "HH:mm"
@@ -77,14 +77,14 @@ class DayViewController: UIViewController, WeatherViewController {
 
         descriptionLabel.text = weatherData.summary
 
-        if UserDefaults.temperatureNotation() != .fahrenheit {
+        if TemperatureNotation.getNotation() != .fahrenheit {
             temperature = temperature.toCelcius()
             temperatureLabel.text = String(format: "%.1f °C", temperature)
         } else {
             temperatureLabel.text = String(format: "%.1f °F", temperature)
         }
 
-        if UserDefaults.unitsNotation() != .imperial {
+        if UnitsNotation.getNotation() != .imperial {
             windSpeed = windSpeed.toKPH()
             windSpeedLabel.text = String(format: "%.f KPH", windSpeed)
         } else {

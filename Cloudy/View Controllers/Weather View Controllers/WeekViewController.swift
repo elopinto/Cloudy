@@ -96,7 +96,7 @@ class WeekViewController: UITableViewController, WeatherViewController {
             var temperatureMin = weatherData.temperatureMin
             var temperatureMax = weatherData.temperatureMax
 
-            if UserDefaults.temperatureNotation() != .fahrenheit {
+            if TemperatureNotation.getNotation() != .fahrenheit {
                 temperatureMin = temperatureMin.toCelcius()
                 temperatureMax = temperatureMax.toCelcius()
             }
@@ -110,7 +110,7 @@ class WeekViewController: UITableViewController, WeatherViewController {
 
             cell.temperatureLabel.text = "\(min) - \(max)"
 
-            if UserDefaults.unitsNotation() != .imperial {
+            if UnitsNotation.getNotation() != .imperial {
                 windSpeed = windSpeed.toKPH()
                 cell.windSpeedLabel.text = String(format: "%.f KPH", windSpeed)
             } else {
